@@ -158,3 +158,48 @@ person.xxx = 123 // 运行代码报错
 ```ts
 const fn: () => string = () => "123" // 定义一个变量必须是函数类型的， 返回值必须是string类型
 ```
+
+##### 5. 函数类型注解
+
+1. 函数返回类型为number
+
+```ts
+function fn(a, b): number {
+  return a + b
+}
+fn(1, 2)
+```
+
+2. 函数void
+
+显示注解为void类型， 函数没有返回值
+
+```ts
+function fn(): void {
+  console.log(1)
+}
+```
+
+3. 函数不会自动类型推导
+
+```ts
+function testFnQ(a: number, b: number) {
+  return a + b
+}
+testFnQ(1, 2)
+```
+
+```ts
+function testFnQ(obj: {num: number}) {
+  return obj.num
+}
+testFnQ({num: 18})
+```
+
+4. 元组Tuple
+
+用于表示一个已知数组的数量和类型的数组, 定义数组中每一个值的类型
+
+```ts
+const arr: [string, number] = ['xiaoming', 1]
+```
