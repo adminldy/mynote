@@ -316,4 +316,128 @@ interface Type1 {
 // interface接口可以出现重复类型名称, 并将他们合并起来
 ```
 
-7.2 type支持表达式
+7.2 type支持表达式, interface不支持
+
+```ts
+const count: number = 123
+type testType = typeof count
+
+interface testType {
+  [name: typeof coutn]: any // 报错
+}
+```
+
+7.3 type支持类型映射, interface不支持
+
+```ts
+type keys = "names" | "age"
+type keysObj = {
+  [propName in keys]: string
+}
+
+const PersonObj: keysObj = {
+  name: "zhangsan",
+  age: "18"
+}
+
+interface testType {
+  [propName in keys]: string // 报错
+}
+```
+8. 联合类型
+
+联合类型用 | 表示， 就是满足一个类型就可以
+
+```ts
+const statusTest: string | number = "xiaoming"
+
+const flag: boolean | number = true
+```
+
+改造前:
+```ts
+function testStatusFn(params: number | string) {
+  console.log(params.toFixed()) // 报错
+}
+
+testStatusFn(1)
+```
+改造后
+1. 
+```ts
+function testStatusFn(params: number | string) {
+  if(typeof params === 'string') {
+    console.log(params.split)
+  }
+  
+  if(typeof params === "number") {
+    console.log(params.toFixed)
+  }
+}
+
+testStatusFn(1)
+```
+
+```ts
+interface frontEnd {
+    name: string
+}
+
+interface backEnd {
+    age: string
+}
+
+function testStatusFn(params: frontEnd | backEnd) {
+  if("name" in params) {
+    console.log(params.split)
+  }
+  
+  if("age" in params) {
+    console.log(params.toFixed)
+  }
+}
+
+```
+
+```ts
+function testStatusFn(params: frontEnd | backEnd) { 
+  if("name" in params) {
+    const res = (params as frontEnd).name
+    console.log(res)
+  }
+
+  if("age" in params) {
+    const res = (params as backEnd).age
+    console.log(res)
+  }
+}
+
+testStatusFn({age: 19})
+```
+9. 交叉类型
+
+```ts
+interface frontEnd {
+  name: string
+}
+
+interface backEnd {
+  age: number
+}
+
+function testStatusFn(params: frontEnd & backEnd) {}
+
+testStatusFn({age: 11, name: 'xiaoming'})
+```
+
+10. 泛型
+
+```ts
+function test<T>(a: T,b: T){
+  console.log(a, b)
+}
+
+test<number>(1, "123") // 报错 尖括号内的就是泛型的类型 报错
+
+test<boolean>(true, false)
+```
