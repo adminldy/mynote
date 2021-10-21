@@ -203,3 +203,117 @@ testFnQ({num: 18})
 ```ts
 const arr: [string, number] = ['xiaoming', 1]
 ```
+5. 枚举Enum
+
+```ts
+enum color {
+  RED,
+  BLUE: "blue",
+  GREEN: "green"
+}
+
+// color["RED"] = 0
+// color["BLUE"] = "blue"
+
+```
+6. 接口interface
+
+```ts
+interface Types {
+  name: string,
+  age: number
+}
+
+const testObj: Types = {name: 'zhangsan', age: 18}
+
+const testObj1: Types = {name: 'xiaoming', age: 22}
+
+```
+
+6.1 readonly修饰符
+
+readonldy类型，只可读状态，不可更改
+
+```ts
+interface Types {
+  name: string,
+  age: number
+}
+
+const testObj: Types = {name: 'zhangsan', age: 18}
+
+const testObj1: Types = {name: 'xiaoming', age: 22}
+
+testObj.name = "123" // 无法更改name属性， 因为它是只读属性
+```
+
+6.2 ?可选修饰符
+
+```ts
+interface Types {
+  readonly name: string,
+  readonly age: number,
+  sex?: string
+}
+
+const testObj: Types = {name: 'lisi', age: 19}
+```
+
+6.3 extends继承
+
+```ts
+interface Types {
+  readonly name: string,
+  readonly age: number,
+  sex?: string
+}
+
+interface childrenType extends Types {
+  hobby: []
+}
+
+const testObj: childrenType = {name: "xiaoming", age: 18, hobby: ['baseketball', 'tennis']}
+```
+
+6.4 propName扩展
+
+```ts
+interface Types {
+  readonly name: string,
+  readonly age: number,
+  sex?: string,
+  [propName: string]: any // propName字段必须是string类型 值是any
+}
+
+const testObj: Types = {name: "xiaohong", age: 18, hobby: []}
+```
+
+  7. Type
+
+```ts
+type Types = string
+
+type TypeUnit = string | number
+
+const name: typeUnit = "abc"
+const age: typeUnit = 19
+```
+
+7.1 type不支持重复声明, interface支持
+
+```ts
+type Types = number
+
+type Types = string // 报错， type不允许出现重复的名字
+
+interface Types1 {
+  name: string
+}
+
+interface Type1 {
+  age: number
+}
+// interface接口可以出现重复类型名称, 并将他们合并起来
+```
+
+7.2 type支持表达式
