@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul>
+      <li>
+        <a href="/home">home</a>
+      </li>
+      <li>
+        <a href="/about">about</a>
+      </li>
+      <div id="routeView"></div>
+    </ul>
+    <script>
+      let routeView = document.querySelector("#routeView");
+      window.addEventListener("DOMContentLoaded", onLoad);
+      window.addEventListener("popstate", () => {
+        routeView.innerHTML = location.pathname;
+      });
+      function onLoad() {
+        routeView.innerHTML = location.pathname;
+        let linkList = document.querySelectorAll("a[href]");
+        linkList.forEach((el) =>
+          el.addEventListener("click", function (e) {
+            e.preventDefault();
+            history.pushState(null, "", el.getAttribute("href"));
+            routeView.innerHTML = location.pathname;
+          })
+        );
+      }
+    </script>
+  </body>
+</html>
