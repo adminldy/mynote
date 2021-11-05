@@ -1,0 +1,6 @@
+let title = require('./title')
+let user = require('./user.json')
+let content = require('./content.txt')
+console.log(title)
+console.log(user)
+console.log(content.default)

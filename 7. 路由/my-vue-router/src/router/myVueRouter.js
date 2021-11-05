@@ -1,10 +1,15 @@
 let Vue = null;
+class HistoryRoute {
+  constructor() {
+    this.current = null;
+  }
+}
 class VueRouter {
   constructor(options) {
     this.mode = options.mode || "hash"; // 定义模式 默认hash
     this.routes = options.routes || []; // 你传递的这个路由是一个数组
     this.routesMap = this.createMap(this.routes);
-    console.log(this.routesMap);
+    this.history = new HistoryRoute();
   }
   install = (v) => {
     Vue = v;
@@ -22,18 +27,38 @@ class VueRouter {
             return this._root._router;
           },
         });
+        Object.defineProperty(this, "$route", {
+          get() {
+            return this._root._router.history.current;
+          },
+        });
       },
     });
     Vue.component("router-link", {
-      template: '<a href="#">router-link</a>',
+      props: {
+        to: String,
+      },
+      render(h) {
+        let mode = this._self._root._router.mode;
+        let to = mode === "hash" ? "#" + this.to : this.to;
+        return h("a", { attrs: { href: to } }, this.$slots.default);
+      },
     });
 
     Vue.component("router-view", {
-      template: "<div>router-view</div>",
+      render(h) {
+        let current = this._self._root._router.history.current;
+        let routeMap = this._self._root._router.routesMap;
+        return h(routeMap[current]);
+      },
     });
   };
   createMap(routes) {
-    return routes.reduce((pre, cur) => (pre[cur.path] = cur.component), {});
+    const arr = routes.reduce((pre, cur) => {
+      pre[cur.path] = cur.component;
+      return pre;
+    }, {});
+    return arr;
   }
 }
 
