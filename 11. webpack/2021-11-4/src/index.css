@@ -1,4 +1,5 @@
 @import './bg.css';
 body {
   color: green;
+  background-image: url('./images/jqm.png');
 }
