@@ -16,12 +16,13 @@ module.exports = (env) => {
     // 多入口文件
     entry: {
       main: "./src/index.js",
+      vendor: ['lodash']
       // index1: './src/index.js',
       // index2: './src/index2.js'
     },
     output: {
       path: path.resolve(__dirname, "dist"),
-      filename: "[name].js",
+      filename: "[name].[chunkhash:8].js",
       // 因为我们打包后的文件可能会通过网络传递到另一个方法
       // publicPath: '/' // 公开访问路径
     },
@@ -101,15 +102,15 @@ module.exports = (env) => {
         {
           test: /\.css/,
           use: [ // 最后一个loader是最左边的loader 一定要返回一个JS脚本
-            MiniCssExtractPlugin.loader, 'css-loader']
+            MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
         },
         {
           test: /\.less/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
+          use: [MiniCssExtractPlugin.loader, 'css-loader','postcss-loader', 'less-loader']
         },
         {
           test: /\.scss/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+          use: [MiniCssExtractPlugin.loader, 'css-loader','postcss-loader', 'sass-loader']
         },
         {
           test: /\.(jpg|png|bmp|gif|svg)$/,
@@ -186,7 +187,7 @@ module.exports = (env) => {
       }),
       // 使css单独打包为一个文件
       new MiniCssExtractPlugin({
-        filename: 'css/[name].css'
+        filename: 'css/[name].[chunkhash:8].css'
       })
     ],
   };

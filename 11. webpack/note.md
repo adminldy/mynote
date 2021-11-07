@@ -57,3 +57,8 @@ pre => normal => inline => post
 
 - 只包含行，不包含列
 - 包含 babel 的 map 映射，可以看到最原始的代码
+
+#### chunkhash
+
+模块 => 从入口文件出发， 和它依赖模块构建成一个代码块 chunk => chunk 会产生 asset assets 约等于文件
+chunkHash 会根据不同的入口文件，进行依赖文件解析构建对应的 hash 值

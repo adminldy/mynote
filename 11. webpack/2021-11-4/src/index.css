@@ -1,5 +1,14 @@
 @import './bg.css';
 body {
   color: green;
-  background-image: url('./images/jqm.png');
+}
+#root {
+  width: 100px;
+  height: 100px;
+  background-color: yellow;
+  border-radius: 50%;
+  transform: rotateY(30deg);
+}
+::placeholder {
+  color: red;
 }
