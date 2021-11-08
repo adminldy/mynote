@@ -1,4 +1,15 @@
 @import './bg.css';
+@import './less.less';
 body {
   color: green;
+}
+#root {
+  width: 100px;
+  height: 100px;
+  background-color: yellow;
+  border-radius: 50%;
+  transform: rotateY(30deg);
+}
+::placeholder {
+  color: red;
 }

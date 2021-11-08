@@ -1,22 +1,19 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require('webpack')
-// 在配置文件中默认获取不到这个process.env.NODE_ENV=undefined
+
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+// 将css单独打包
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = (env) => {
-  // let isProduction = env.production // 是否是生产
-  // let isDevelopment = env.development // 是否是开发
   return {
     mode: process.env.NODE_ENV,
-    devtool: 'source-map',
+    devtool: false,
     // 多入口文件
-    entry: {
-      main: "./src/index.js",
-      // index1: './src/index.js',
-      // index2: './src/index2.js'
-    },
+    entry: "./src/index.js",
     output: {
       path: path.resolve(__dirname, "dist"),
-      filename: "[name].js",
+      filename: "[name].[chunkhash:8].js",
       // 因为我们打包后的文件可能会通过网络传递到另一个方法
       // publicPath: '/' // 公开访问路径
     },
@@ -26,30 +23,26 @@ module.exports = (env) => {
       hot: true, // 配置模块热更新
       compress: true, // 启动压缩gzip
       port: 8080,
-      open: true // 启动之后自动打开浏览器
+      open: true, // 启动之后自动打开浏览器
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3000',
+          pathRewrite: {
+            '^/api': ''
+          }
+        },
+      }
     },
-    // 别名
-    // alias: {
-    //   '~': path.resolve(__dirname, 'src'),
-    //   '@': path.resolve(__dirname, 'src')
-    // },
-    // 对于除了JS和JSON之外得文件，让webpack认识， 需要配置loader
-    // loader加载器可以把webpack不认识的模块转换成webpack认识的模块
     module: {
       rules: [
-        // {
-        //   test: /\.jsx?$/,
-        //   loader: 'eslint-loader',
-        //   enforce: 'pre',
-        //   options: {fix: true},
-        //   exclude: /node_modules/ // 对于node_modules里面的模块不需要检查代码
-        // },
         {
           test: /\.jsx?$/,
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ["@babel/preset-env", "@babel/preset-react"],
+              presets: [[
+                "@babel/preset-env",
+              ], "@babel/preset-react"],
               plugins: [
                 ["@babel/plugin-proposal-decorators", {legacy: true}],
                 ["@babel/plugin-proposal-class-properties", {loose: true}]
@@ -58,22 +51,28 @@ module.exports = (env) => {
           }
         },
         {
-          test: /\.txt$/,
-          type: 'asset/source' // 表示这是一个普通资源， 直接加载
-          // use: ["raw-loader"],
-        },
-        {
           test: /\.css/,
           use: [ // 最后一个loader是最左边的loader 一定要返回一个JS脚本
-            'style-loader', 'css-loader']
+            MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', {
+              loader: 'px2rem-loader',
+              options: {
+                remUnit: 75, // 一个REM是多少个像素
+                remPrecision: 8 // 计算REM的单位，保留几位小数 设置精度
+              }
+            }]
         },
         {
           test: /\.less/,
-          use: ['style-loader', 'css-loader', 'less-loader']
+          use: [MiniCssExtractPlugin.loader, {
+            loader: 'css-loader',
+            options: { // 如果不配的话默认值是0
+              importLoaders: 2
+            }
+          },'postcss-loader', 'less-loader']
         },
         {
           test: /\.scss/,
-          use: ['style-loader', 'css-loader', 'sass-loader']
+          use: [MiniCssExtractPlugin.loader, 'css-loader','postcss-loader', 'sass-loader']
         },
         {
           test: /\.(jpg|png|bmp|gif|svg)$/,
@@ -82,17 +81,19 @@ module.exports = (env) => {
           //   // url-loader可以把一些小图片变成base64字符串内嵌在页面中
           //   loader: 'url-loader',
           //   options: {
-          //     name: '[hash:10].[ext]',
+          //     // name: '[hash:10].[ext]',
           //     esModule: false, // 是否包装成一个ES6模块 Module.default
-          //     limit: 8 * 1024 // 8k 当小于limit内联到html 不打包
+          //     limit: 8 * 1024, // 8k 当小于limit内联到html 不打包
+          //     outputPath: 'images', // 指定写入到输出目录里
+          //     publicPath: '/images'
           //   }
           // },
           // ]
         },
-        {
-          test: /\.(jpg)$/,
-          type: 'asset/inline' // 相当于原来url-loader 强制base64
-        },
+        // {
+        //   test: /\.(jpg)$/,
+        //   type: 'asset/inline' // 相当于原来url-loader 强制base64
+        // },
       ],
     },
     plugins: [
@@ -101,11 +102,14 @@ module.exports = (env) => {
       new HtmlWebpackPlugin({
         template: "./src/index.html",
         filename: "index.html",
+        // minify: { // 压缩HTML
+        //   collapseWhitespace: true,
+        //   removeComments: true
+        // }
       }),
-      // 配置全局NODE_ENV
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-      })
+      new CleanWebpackPlugin({ // 再重新打包前先把输出目录清空一下
+        cleanOnceBeforeBuildPatterns: ['**/*']
+      }),
     ],
   };
 };

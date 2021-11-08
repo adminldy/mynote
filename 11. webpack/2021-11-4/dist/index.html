@@ -1,1 +1,9 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Document</title><script defer="defer" src="main.js"></script></head><body><div id="logo"></div></body></html>
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Document</title><script>let docElement = document.documentElement
+      function setRemUnit() {
+        // 把根元素的字体大小设置为宽度的十分之一
+        // 屏幕宽是750px的话， fontSize = 75
+        // iphone 6 宽是375 fontSize=37.5
+        docElement.style.fontSize = docElement.clientWidth / 10 + 'px'
+      }
+      setRemUnit()
+      window.addEventListener('resize', setRemUnit)</script><script defer="defer" src="main.407a69cf.js"></script></head><body><div id="root"></div><input placeholder="123"/><div class="test">123</div></body></html>
