@@ -19,10 +19,45 @@ let ArrowFuncitonsPlugin2 = {
   visitor: {
     ArrowFunctionExpression(nodePath) {
       let node = nodePath.node
-      console.log(node)
+      const thisBinding = hoistFunctionEnvironment(nodePath)
       node.type = 'FunctionExpression'
     }
   }
+}
+// 把老树改成新树
+function hoistFunctionEnvironment(fnPath) {
+  // Program
+  const thisEnvFn = fnPath.findParent(p => {
+    return (p.isFunction() && !p.isArrowFunctionExpression()) || p.isProgram()
+  })
+  // 找当前的作用域哪些地方用到了this的路径
+  let thisPaths = getScopeInfoInformation(fnPath)
+  // 声明了一个this的别名变量， 默认是_this
+  let thisBinding = '_this'
+  if(thisPaths.length > 0) {
+    // 在thisEnvFn的作用域内添加一个变量， 变量名_this， 初始化的值为this
+    thisEnvFn.scope.push({
+      id: types.identifier(thisBinding),
+      init: types.thisExpression()
+    })
+    thisPaths.forEach(thisPath => {
+      // 创建一个_this的标识符
+      let thisBindingRef = types.identifier(thisBinding)
+      // 把老路径上的节点配置成新节点
+      thisPath.replaceWith(thisBindingRef)
+    })
+  }
+}
+
+function getScopeInfoInformation(fnPath) {
+  let thisPaths = []
+  // 遍历当前path所有子节点路径
+  fnPath.traverse({
+    ThisExpression(thisPath) {
+      thisPath.push(thisPath)
+    }
+  })
+  return thisPaths
 }
 /**
  * 1. 根据源代码老的语法树
@@ -32,7 +67,7 @@ let ArrowFuncitonsPlugin2 = {
  * 原则 尽可能少动少改， 尽可能复用原来的节点
  */
 let targetCode = core.transform(sourceCode, {
-  plugins: [ArrowFuncitonsPlugin2]
+  plugins: [ArrowFuncitonsPlugin]
 })
 
 console.log(targetCode)
