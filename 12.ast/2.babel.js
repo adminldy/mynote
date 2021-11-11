@@ -4,9 +4,11 @@ let core = require('@babel/core')
 let types = require('babel-types')
 
 let ArrowFuncitonsPlugin = require('babel-plugin-transform-es2015-arrow-functions')
-
+// presetEnv是插件的合集， 包含了好几十个插件 let => var
+let presetEnv = require('@babel/preset-env')
 let sourceCode = `
   const sum = (a, b) => {
+    console.log(this)
     return a + b
   }
 `
@@ -19,7 +21,6 @@ let ArrowFuncitonsPlugin2 = {
   visitor: {
     ArrowFunctionExpression(nodePath) {
       let node = nodePath.node
-      console.log(node)
       node.type = 'FunctionExpression'
     }
   }
@@ -31,8 +32,9 @@ let ArrowFuncitonsPlugin2 = {
  * 插件的核心 把老的语法树转成新的语法树
  * 原则 尽可能少动少改， 尽可能复用原来的节点
  */
+// @babel/core.transform = esprima + estraverse + escodegen
 let targetCode = core.transform(sourceCode, {
-  plugins: [ArrowFuncitonsPlugin2]
+  presets: [presetEnv]
 })
 
-console.log(targetCode)
+console.log(targetCode.code)
