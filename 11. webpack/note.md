@@ -69,3 +69,6 @@ chunkHash 会根据不同的入口文件，进行依赖文件解析构建对应�
 - 不转换
    - 最新ES API ， 比如Promise
    - 最新ES实例方法 比如 String.prototype.includes
+
+#### loader
+
