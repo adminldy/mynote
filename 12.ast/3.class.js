@@ -9,22 +9,41 @@ let es6Code = `
     }
   }
 `
-
-let es5Code = core.transform(es6Code, {
-  plugins: [ClassPlugin]
-})
-
-console.log(es5Code.code)
-
+// 插件是一个对象， 它有个属性visitor访问者， 访问器
 let transformClasses2 = {
   visitor: {
-    classDeclaration(nodePath) {
+    ClassDeclaration(nodePath) {
       const {node} = nodePath
-      const ref = node.id
-      path.replaceWith(/*新节点*/)
+      const id = node.id // {type: identifier, name: Person}
+      let methods = node.body.body
+      let functions = []
+      console.log('methods', methods)
+      methods.forEach(classMethod => {
+        if(classMethod.kind === 'constructor') {
+          let constructorFunction = t.functionDeclaration(
+            id, classMethod.params, classMethod.body, classMethod.generator, classMethod.async
+          )
+          functions.push(constructorFunction)
+        } else {
+          let prototypeMemberExpression = t.memberExpression(id, t.identifier(''))
+          let memberFunction = t.functionDeclaration(
+            id, classMethod.params, classMethod.body, classMethod.generator, classMethod.async
+          )
+          functions.push(constructorFunction)
+          let assignmentExpression = t.assignmentExpression("=", left, memberFunction)
+        }
+      })
     }
   }
 }
+
+let es5Code = core.transform(es6Code, {
+  plugins: [transformClasses2]
+})
+
+console.log(es5Code)
+
+
 /**
  * 
  */
