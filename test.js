@@ -1,5 +1,7 @@
-function test(a,b,...c) {
-  console.log(c)
+const add = (a,b,c) => a + b + c
+
+function currying(fn) {
+  console.log(fn.length)
 }
 
-test(1, 2, 3)
+currying(add)

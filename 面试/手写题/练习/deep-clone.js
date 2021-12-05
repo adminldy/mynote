@@ -1,0 +1,32 @@
+function deepClone(obj, hash = new WeakMap()) {
+  if(obj === null) {
+    return null
+  }
+  if(obj instanceof Date) {
+    return new Date(obj)
+  }
+  if(obj instanceof RegExp) {
+    return new RegExp(obj)
+  }
+  if(typeof obj !== 'object') {
+    return obj
+  }
+  if(hash.has(obj)) {
+    return hash.get(obj)
+  }
+  let resObj = Array.isArray(obj) ? [] : {}
+  hash.set(obj, resObj)
+  Object.keys(obj).forEach(key => {
+    resObj[key] = deepClone(obj[key], hash)
+  })
+  return resObj
+}
+
+let data = {
+  a: 1,
+  b: {
+    c: 23
+  }
+}
+
+console.log(deepClone(data))

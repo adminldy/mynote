@@ -1,4 +1,3 @@
-import { wrapToVdom } from "./utils"
 import {REACT_TEXT} from './constants'
 function createElement(type, props, ...children) {
   return {
