@@ -136,8 +136,8 @@ export default class CartSample extends Component {
   minus = good => {
     // 创建新购物车
     const newCart = [...this.state.cart];
-    const item = newCart.find(c => c.id === good.id);
-    item.count = item.count - 1;
+      const item = newCart.find(c => c.id === good.id);
+      item.count = item.count - 1;
 
     // 更新
     this.setState({ cart: newCart });

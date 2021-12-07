@@ -9,10 +9,10 @@ export default class Page1 extends Component {
       name: '',
       id: '',
       time: '',
-      valid: ''
+      valid: '',
     },
-    dataSource: []
-  }
+    dataSource: [],
+  };
   columns = [
     { dataIndex: 'label', title: '标签' },
     {
@@ -20,12 +20,12 @@ export default class Page1 extends Component {
       title: '操作',
       render: (_, record) => {
         const onOpen = () => window.open(`/xxx/${record.id}`);
-        return <Button onClick = { onOpen } > 查看 < /Button>;
-      }
-    }
-  ]
-  
-/*  columns =  [
+        return <Button onClick={onOpen}> 查看 </Button>;
+      },
+    },
+  ];
+
+  /*  columns =  [
       {dataIndex: 'name', title: '名称'},
       {dataIndex: 'action', title: '操作',
       render: (_, record) => {
@@ -34,18 +34,22 @@ export default class Page1 extends Component {
         <Button onClick={() => this.onDelete(record.id)}>删除</Button>
       </>;
       }
-    }]  onEdit = () => {}
-  onDelete = () => {} */
+    }]
+  onEdit = () => {}
+  onDelete = () => {}
+ */
 
   onChange = (params) => {
-    this.setState(query => ({ ...query, ...params }));
-    request('/api/list', { // /api/list/admin
+    this.setState((query) => ({ ...query, ...params }));
+    request('/api/list', {
+      // /api/list/admin
       method: 'GET',
-      params
-    }).then(res => { // 这⾥暂不考虑异常
+      params,
+    }).then((res) => {
+      // 这⾥暂不考虑异常
       this.setState({ dataSource: res.data });
     });
-  }
+  };
 
   componentDidMount() {
     this.onChange(this.state.query);
@@ -53,13 +57,14 @@ export default class Page1 extends Component {
 
   render() {
     const { query, dataSource } = this.state;
-    return ( <>
-        <SearchPanel value = { query } onChange = { this.onChange } />
+    return (
+      <>
+        <SearchPanel value={query} onChange={this.onChange} />
         <Table
-          columns = { this.columns }
-          dataSource = { dataSource }
+          columns={this.columns}
+          dataSource={dataSource}
           pagination={{
-            onChange: this.onChange
+            onChange: this.onChange,
           }}
         />
       </>

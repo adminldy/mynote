@@ -6,16 +6,13 @@ class Page1 extends Component {
       title: '操作',
       render: (_, record) => {
         const onOpen = () => window.open(`/xxx/${record.id}`);
-        return <Button onClick = { onOpen } > 查看 < /Button>;
-      }
-    }
-  ]
+        return <Button onClick={onOpen}> 查看 </Button>;
+      },
+    },
+  ];
   render() {
-    return <PageCommon { ...this.props } columns = { this.columns }
-    />;
+    return <PageCommon {...this.props} columns={this.columns} />;
   }
 }
 // PageCommon: { query, dataSource, onChange, columns }
 export default hoc(Page1, '/api/list');
-
-
