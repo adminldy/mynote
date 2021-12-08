@@ -11,7 +11,7 @@ class Page1 extends Component {
     },
   ];
   render() {
-    return <PageCommon {...this.props} columns={this.columns} />;
+    return <PageCommon {...this.props} columns={this.columns} />; 
   }
 }
 // PageCommon: { query, dataSource, onChange, columns }

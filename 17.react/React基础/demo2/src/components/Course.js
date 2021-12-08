@@ -1,33 +1,30 @@
 import React, { Component, createRef } from 'react'
 
-class Sub extends Component {
-  input = createRef()
-  focus = () => {
-    this.input.current.focus()
+const insertLog = WrappedComponent => class extends Component {
+  state = {
+    count: 0
+  }
+  onClick = () => {
+    this.setState({count: this.state.count + 1})
+  }
+  componentDidUpdate(...args) {
+    console.log(...args)
   }
   render() {
-    return <input {...this.props} ref={this.input} />
+    return <WrappedComponent {...this.props} onChange={this.onClick} count={this.state.count}></WrappedComponent>
   }
 }
 
-export default class Parent extends Component {
-  state = {
-    value: ''
-  }
-  input = createRef()
-  onFocus = () => {
-    this.input.current.onFocus()  
-  }
-  onChange = (e) => {
-    this.setState({value: e.target.value})
-  }
+class Course extends Component {
   render() {
-    return <Sub
-      onChange={this.onChange}
-      value={this.state.value}
-      ref={this.input}
-    >
-      <button onClick={this.onFocus}>点击聚焦</button>
-    </Sub>
+    return (
+      <div>
+        Course <button onClick={this.props.onChange}>更新{this.props.count}</button>
+      </div>
+    )
   }
 }
+
+const BaseWithLog = insertLog(Course)
+
+export default BaseWithLog
